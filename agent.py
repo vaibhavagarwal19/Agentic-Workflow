@@ -179,7 +179,11 @@ def run_agent(goal: str) -> AgentResult:
             )
 
         # Case B: model asked for tool(s). Append its message, then run each tool.
-        messages.append(msg.model_dump())
+        messages.append({
+            "role": "assistant",
+            "content": msg.content,
+            "tool_calls": [tc.model_dump() for tc in msg.tool_calls],
+        })
 
         for tc in msg.tool_calls:
             name = tc.function.name
